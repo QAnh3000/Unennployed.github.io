@@ -1,0 +1,53 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="nuhUh.css">
+    <title>Chinh Phục OOP</title>
+</head>
+
+<body>
+    
+    <div class="header">
+        <h1>Students vs MrBac</h1>
+    </div>
+    <div class="character-container">
+        <div class="character">
+            <img alt="Warrior" src="./img/Warrior.png" width="150">
+            <div class="name">Warrior</div>
+            <div class="hp">HP: <span id="warrior-hp">100</span>/100</div>
+        </div>
+        <div class="character">
+            <img alt="Tanker" src="./img/Tanker.png" width="200">
+            <div class="name">Tanker</div>
+            <div class="hp">HP: <span id="tanker-hp">180</span>/180</div>
+        </div>
+        <div class="character">
+            <img alt="Assassin" src="./img/Assassin.png" width="150">
+            <div class="name">Assassin</div>
+            <div class="hp">HP: <span id="assassin-hp">70</span>/70</div>
+        </div>
+        <div class="character">
+            <img alt="Supporter" src="./img/Supporter.png" width="150">
+            <div class="name">Supporter</div>
+            <div class="hp">HP: <span id="supporter-hp">160</span>/160</div>
+        </div>
+    </div>
+    <div class="enemy-container">
+        <div class="character boss">
+            <img alt="MrBac" src="./img/MrBac.png" width="150">
+            <div class="name">MrBac</div>
+            <div class="hp">HP: <span id="boss-hp">200</span>/300</div>
+            
+        </div>
+    </div>
+    <div class="battle-log">
+        <button id="attack-button" class="action-button">Attack</button>
+        <button id="heal-button" class="action-button">Heal</button>
+        <div class="combat-log" id="combatLog"></div>
+        <div class="current-player" id="currentPlayerDisplay">Test  : None</div>
+    </div>
+    
+
+    <script src="mainScript.js"></script>
+</body>
+</html>
