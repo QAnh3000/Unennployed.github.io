@@ -20,13 +20,13 @@ class Character {
 
     attackTarget(target) {
         let damage;
-        const critHit = Math.random() < this.critRate; // Kiểm tra xem có phải là crit không
+        const critHit = Math.random() < this.critRate; 
 
         if (critHit) {
-            damage = (this.attack * 2) - target.defend; // Tăng sát thương cho crit
+            damage = (this.attack * 2) - target.defend;
             logBattleMessage(`${this.name} performed a critical attack on ${target.name}!`);
             logBattleMessage(`${this.name} done ${damage} damage to ${target.name}`);
-            attackChangeBackground('red'); // Đổi màu nền thành đỏ cho crit
+            attackChangeBackground('red'); 
         } else {
             damage = this.attack - target.defend;
             logBattleMessage(`${this.name} done ${damage} damage to ${target.name}`);
@@ -44,7 +44,7 @@ class Character {
             }
         }
 
-        target.updateHpDisplay(); // Cập nhật HP trên HTML
+        target.updateHpDisplay();
     }
     heal() {
         const healAmount = 20;
@@ -76,16 +76,16 @@ function healChangeBackground() {
 }
 
 
-// Định nghĩa Boss
+
 const boss = new Character("MrBac", 300, 30, 10, 0,0.3, "boss-hp");
 
-// Định nghĩa các nhân vật
+
 const warrior = new Character("Warrior", 100, 25, 15, 0, 0.2 , "warrior-hp");
 const tanker = new Character("Tanker", 180, 27, 12, 0, 0.25, "tanker-hp");
 const assassin = new Character("Assassin", 70, 35, 10, 0, 0.4, "assassin-hp");
 const supporter = new Character("Supporter", 160, 30, 8, 0, 0.1, "supporter-hp");
 
-// Mảng nhân vật trong team
+
 const heroes = [warrior, tanker, assassin, supporter];
 
 let currentTurn = 0; 
@@ -94,12 +94,12 @@ function logBattleMessage(message) {
     const battleLogDiv = document.getElementById("combatLog");
     if (battleLogDiv) {
         battleLogDiv.innerHTML += message + "<br>";
-        battleLogDiv.scrollTop = battleLogDiv.scrollHeight; // Cuộn đến cuối
+        battleLogDiv.scrollTop = battleLogDiv.scrollHeight; 
     }
 }
 
 function logMessage(message) {
-    logBattleMessage(message); // Gọi đến logBattleMessage để ghi nhật ký
+    logBattleMessage(message); 
 }
 
 
@@ -113,20 +113,17 @@ function playerTurn(character, action) {
             logMessage(`${character.name} can not heal, only Supporter can heal.`);
         }
     } else {
-        logMessage("Invalid");
     }
 }
 
 function updateCurrentPlayerDisplay(character) {
     const currentPlayerDisplay = document.getElementById("currentPlayerDisplay");
-    //currentPlayerDisplay.textContent = `Lượt của: ${character.name}`;
 }
 
 function nextTurn(action) {
     logMessage(`\n`);
 
     if (currentTurn % 5 === 4) {
-        // Lượt của boss
         if (boss.isAlive()) {
             updateCurrentPlayerDisplay(boss); 
             boss.attackTarget(heroes[0]);
@@ -135,23 +132,22 @@ function nextTurn(action) {
             logMessage("Boss is dead");
             return;
         }
-        currentTurn = 0; // Đặt lại currentTurn về 0 để Warrior thực hiện lượt kế tiếp
+        currentTurn = 0; 
     } else {
-        // Lượt của nhân vật trong team
+
         const currentHero = heroes[currentTurn % 4];
         if (currentHero.isAlive()) {
-            updateCurrentPlayerDisplay(currentHero); // Cập nhật hiển thị tên của nhân vật
-            const initialTurn = currentTurn; // Lưu lại giá trị currentTurn ban đầu
+            updateCurrentPlayerDisplay(currentHero); 
+            const initialTurn = currentTurn;
             playerTurn(currentHero, action);
-            // Chỉ tăng currentTurn nếu action không phải là heal
             if (action !== "heal" || currentHero.name === "Supporter") {
-                currentTurn++; // Chuyển sang lượt tiếp theo
+                currentTurn++; 
             } else {
                 logMessage(`Please choose other actions`);
             }
         } else {
             logMessage(`${currentHero.name} is dead`);
-            currentTurn++; // Chuyển sang lượt tiếp theo ngay cả khi nhân vật bị đánh bại
+            currentTurn++; 
         }
     }
 
@@ -167,7 +163,7 @@ function checkGameStatus() {
     }
 }
 
-// Bắt đầu trò chơi
+
 document.getElementById("attack-button").addEventListener("click", () => {
     nextTurn("attack");
 });
@@ -175,3 +171,62 @@ document.getElementById("attack-button").addEventListener("click", () => {
 document.getElementById("heal-button").addEventListener("click", () => {
     nextTurn("heal");
 });
+function showHealTargets() {
+    document.getElementById("heal-warrior").style.display = "inline";
+    document.getElementById("heal-tanker").style.display = "inline";
+    document.getElementById("heal-assassin").style.display = "inline";
+    document.getElementById("heal-supporter").style.display = "inline";
+}
+
+
+function hideHealTargets() {
+    document.getElementById("heal-warrior").style.display = "none";
+    document.getElementById("heal-tanker").style.display = "none";
+    document.getElementById("heal-assassin").style.display = "none";
+    document.getElementById("heal-supporter").style.display = "none";
+}
+
+
+function healTarget(target) {
+    switch (target) {
+        case "warrior":
+            supporter.heal(warrior);
+            break;
+        case "tanker":
+            supporter.heal(tanker);
+            break;
+        case "assassin":
+            supporter.heal(assassin);
+            break;
+        case "supporter":
+            supporter.heal(supporter);
+            break;
+        default:
+            logMessage("Invalid target for healing.");
+    }
+    hideHealTargets();
+    nextTurn();
+}
+
+Character.prototype.heal = function (target) {
+    const healAmount = 20;
+    target.hp += healAmount;
+    if (target.hp > target.maxHp) target.hp = target.maxHp;
+    logBattleMessage(`${this.name} healed ${target.name} for ${healAmount} HP.`);
+    target.updateHpDisplay();
+    healChangeBackground();
+};
+
+
+document.getElementById("heal-warrior").addEventListener("click", () => healTarget("warrior"));
+document.getElementById("heal-tanker").addEventListener("click", () => healTarget("tanker"));
+document.getElementById("heal-assassin").addEventListener("click", () => healTarget("assassin"));
+document.getElementById("heal-supporter").addEventListener("click", () => healTarget("supporter"));
+
+document.getElementById("heal-button").addEventListener("click", () => {
+    if (heroes[currentTurn % 4].name === "Supporter") {
+        showHealTargets();
+    }
+});
+
+hideHealTargets();
